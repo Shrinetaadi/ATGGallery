@@ -12,16 +12,16 @@ import androidx.navigation.NavController
 import com.google.android.material.navigation.NavigationView
 import com.shrinetaadi.atggallery.R
 import com.shrinetaadi.atggallery.fragment.RecyclerMainFragment
+import com.shrinetaadi.atggallery.fragment.SearchFragment
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.activity_main.*
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     lateinit var drawerLayout: DrawerLayout
     lateinit var coordinatorLayout: CoordinatorLayout
     lateinit var toolbar: androidx.appcompat.widget.Toolbar
-    lateinit var navigationView: NavigationView
-    lateinit var navController: NavController
-
+    private var previousMenuItem: MenuItem? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -29,12 +29,13 @@ class MainActivity : AppCompatActivity() {
         drawerLayout = findViewById(R.id.drawerLayout)
         coordinatorLayout = findViewById(R.id.coordinatorLayout)
         toolbar = findViewById(R.id.toolbar)
-        navigationView = findViewById(R.id.navView)
         setSupportActionBar(toolbar)
         supportActionBar?.setHomeButtonEnabled(true)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        var bundle = Bundle()
-        replaceFragment(RecyclerMainFragment(),"Gallery",bundle )
+        val toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+        drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
+        replaceFragment(RecyclerMainFragment(), "Gallery")
 
         val actionBarDrawerToggle = ActionBarDrawerToggle(
             this@MainActivity,
@@ -44,8 +45,36 @@ class MainActivity : AppCompatActivity() {
         )
         drawerLayout.addDrawerListener(actionBarDrawerToggle)
         actionBarDrawerToggle.syncState()
+        navView.setNavigationItemSelectedListener {
+            if (previousMenuItem != null) {
+                previousMenuItem?.isChecked = false
+            }
+            it.isCheckable = true
+            it.isChecked = true
+            previousMenuItem = it
+
+            if (it.itemId == R.id.home_menu) {
+                replaceFragment(RecyclerMainFragment(), "Gallery");
+                drawerLayout.closeDrawers();
+            }
+            if (it.itemId == R.id.search_menu) {
+                replaceFragment(SearchFragment(), "Search");
+                drawerLayout.closeDrawers();
+            }
+
+
+            return@setNavigationItemSelectedListener true
+
+        }
 
     }
+
+    fun replaceFragment(fragment: Fragment, tag: String) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.frameLayout, fragment).addToBackStack(null).commit()
+        supportActionBar?.title = tag
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
         if (id == android.R.id.home) {
@@ -54,18 +83,10 @@ class MainActivity : AppCompatActivity() {
 
         return super.onOptionsItemSelected(item)
     }
-    fun replaceFragment(fragment: Fragment, tag: String , arg: Bundle) {
-        fragment.arguments=arg
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.frameLayout, fragment).addToBackStack(null).commit()
-        supportActionBar?.title=tag
-    }
-
-    fun navController(): NavController {
-    return navController
-    }
 
     override fun onBackPressed() {
-        finish()
+        super.onBackPressed()
     }
+
+
 }

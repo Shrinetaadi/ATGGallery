@@ -10,7 +10,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object AppModule {
+object  AppModule {
     val baseURL: String = "https://api.flickr.com/services/"
 
     @Singleton

@@ -9,14 +9,5 @@
         android:id="@+id/recyclerMainFragment"
         android:name="com.shrinetaadi.atggallery.fragment.RecyclerMainFragment"
         android:label="fragment_recycler_main"
-        tools:layout="@layout/fragment_recycler_main">
-        <action
-            android:id="@+id/action_recyclerMainFragment_to_bigPictureFragment"
-            app:destination="@id/bigPictureFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/bigPictureFragment"
-        android:name="com.shrinetaadi.atggallery.fragment.BigPictureFragment"
-        android:label="fragment_big_picture"
-        tools:layout="@layout/fragment_big_picture" />
+        tools:layout="@layout/fragment_recycler_main"/>
 </navigation>

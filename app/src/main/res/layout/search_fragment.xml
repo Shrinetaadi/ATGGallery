@@ -1,38 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/swipeRefreshLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/frameLayoutSearch"
     android:background="@color/color4"
-    tools:context=".fragment.RecyclerMainFragment">
+    tools:context=".fragment.SearchFragment">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerHome"
+            android:id="@+id/recyclerSearch"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/progressHome"
             android:orientation="vertical"
-            android:padding="2dp"
+            android:padding="8dp"
             app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
             app:spanCount="2"
             tools:listitem="@layout/item_gallery" />
 
         <ProgressBar
-            android:id="@+id/progressHome"
+            android:id="@+id/progressSearch"
             style="?android:attr/progressBarStyleLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:indeterminate="true"
             android:indeterminateDrawable="@drawable/progress_bar"
-            android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@+id/recyclerHome" />
+            android:visibility="gone" />
     </RelativeLayout>
-</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+</FrameLayout>

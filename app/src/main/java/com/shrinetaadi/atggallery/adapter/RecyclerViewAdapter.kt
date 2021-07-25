@@ -9,62 +9,52 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.shrinetaadi.atggallery.MainActivityViewModel
-import com.shrinetaadi.atggallery.Photo
-import com.shrinetaadi.atggallery.R
+import com.shrinetaadi.atggallery.*
 import com.shrinetaadi.atggallery.activity.BigPictureActivity
+import kotlinx.android.synthetic.main.item_gallery.view.*
 
-class RecyclerViewAdapter(val context: Context) :
+class RecyclerViewAdapter(val listFlickrPhotos: ArrayList<FlickrResult.FlickrPhoto.Photo>) :
     RecyclerView.Adapter<RecyclerViewAdapter.MyViewHolder>() {
-    var itemList: List<Photo>? = null
-    private lateinit var viewModel: MainActivityViewModel
-    fun setData(it: List<Photo>) {
-        itemList = it
+
+
+    fun updatePhoto(newPhoto: List<FlickrResult.FlickrPhoto.Photo>, pageNo: Int) {
+        if (pageNo == 1)
+            listFlickrPhotos.clear()
+        listFlickrPhotos.addAll(newPhoto)
+
+        notifyDataSetChanged()
     }
 
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
-    ): MyViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_gallery, parent, false)
-
-        return MyViewHolder(view)
-    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = MyViewHolder(
+        LayoutInflater.from(parent.context).inflate(R.layout.item_gallery, parent, false)
+    )
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val photo = itemList?.get(position)
-
-        Glide.with(holder.imggallery).load(photo?.url_s).into(holder.imggallery)
-        val arg = Bundle()
-        arg.putString("url", photo?.url_s.toString())
-        arg.putString("title",photo?.title.toString())
-        holder.imggallery.setOnClickListener {
-            val intent = Intent(context, BigPictureActivity::class.java)
-            intent.putExtra("arr",arg)
-            context.startActivity(intent)
-
-            //My Fragment is not inflating in framelayout
-            //it is showing some error of NavController not set
-            /*Navigation.findNavController(it)
-                .navigate(R.id.action_recyclerMainFragment_to_bigPictureFragment)
-             */
-
-        }
-
+        holder.bind(listFlickrPhotos[position])
     }
 
-    override fun getItemCount(): Int {
-        return itemList?.size ?: 1
-    }
 
-    fun setViewModel(viewModel: MainActivityViewModel) {
-        this.viewModel = viewModel
-
-    }
+    override fun getItemCount() = listFlickrPhotos.size
 
 
     class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val imggallery = view.findViewById<ImageView>(R.id.imgItem)
+        val imggallery = view.imgItem
+        val context = view.context
+        val progressDrawable = getProgressDrawable(view.context)
+        fun bind(photo: FlickrResult.FlickrPhoto.Photo) {
+            imggallery.loadImage(photo.url_s, progressDrawable)
+            imggallery.setOnClickListener {
+                val arg = Bundle()
+                arg.putString("title", photo.title)
+                arg.putString("url", photo.url_s)
+                val intent = Intent(context, BigPictureActivity::class.java)
+                intent.putExtra("arr", arg)
+                context.startActivity(intent)
+
+            }
+        }
+
+
     }
 
 
